@@ -1,0 +1,86 @@
+---
+title: "Modern Linux command-line tools"
+description: "A curated reference of modern CLI alternatives to classic Unix tools"
+icon: "terminal"
+---
+
+## Core utilities
+
+| Tool | Description |
+|------|-------------|
+| [**eza**](https://github.com/eza-community/eza) | Modern `ls` with git integration, tree view, icons. Rust-based with extended attributes support. |
+| [**bat**](https://github.com/sharkdp/bat) | `cat` with syntax highlighting (200+ languages), git integration, automatic paging. |
+| [**fd**](https://github.com/sharkdp/fd) | Fast `find` alternative. Respects `.gitignore`, 3-5x faster, regex/glob support. |
+| [**ripgrep**](https://github.com/BurntSushi/ripgrep) | Blazing-fast recursive grep. Auto-skips binaries/hidden dirs. Processes 10GB+ codebases in seconds. |
+| [**zoxide**](https://github.com/ajeetdsouza/zoxide) | Smart `cd` replacement. Learns frecency patterns for instant navigation. |
+| [**fzf**](https://github.com/junegunn/fzf) | Interactive fuzzy finder for any input. Shell history, files, processes. Handles 10M+ lines. |
+
+## System monitoring
+
+| Tool | Description |
+|------|-------------|
+| [**btop**](https://github.com/aristocratos/btop) | Advanced resource monitor. Mouse-driven, network stats, disk I/O graphs. |
+| [**procs**](https://github.com/dalance/procs) | Modern `ps` with tree view, per-process ports, search. Color-coded resource usage. |
+
+## Disk analysis
+
+| Tool | Description |
+|------|-------------|
+| [**dust**](https://github.com/bootandy/dust) | Graphical `du` showing largest directories first. Permission-error tolerant. |
+| [**duf**](https://github.com/muesli/duf) | Better `df` with color-coded warnings, device grouping, JSON export. |
+| [**gdu**](https://github.com/dundee/gdu) | Fast ncurses disk analyzer. 1TB in \<1 minute. Direct deletion support. |
+| [**broot**](https://github.com/Canop/broot) | Interactive tree navigation with fuzzy search, preview, command execution. |
+
+## Text processing
+
+| Tool | Description |
+|------|-------------|
+| [**sd**](https://github.com/chmln/sd) | Intuitive `sed` with Perl regex. Literal mode avoids escaping hell. |
+| [**choose**](https://github.com/theryangeary/choose) | Human-friendly `cut`/`awk` for columns. Zero-indexed, negative indices. |
+| [**jq**](https://github.com/jqlang/jq) | JSON query/transform with filter expressions. Streaming for multi-GB files. |
+| [**delta**](https://github.com/dandavison/delta) | Enhanced git diff with syntax highlighting, side-by-side view, hunk navigation. |
+
+## Network tools
+
+| Tool | Description |
+|------|-------------|
+| [**gping**](https://github.com/orf/gping) | Real-time graphical `ping`. Multi-host with color-coded latency. |
+| [**xh**](https://github.com/ducaale/xh) | Rust `httpie` with 10x faster startup. JSON-first, session persistence. |
+| [**dog**](https://github.com/ogham/dog) | Modern DNS client. Clean tables, DoH/DoT support, color-coded records. |
+| [**trippy**](https://github.com/fujiapple852/trippy) | Interactive `traceroute` with packet loss visualization, per-hop latency distribution. |
+| [**aria2**](https://github.com/aria2/aria2) | Multi-protocol downloader (HTTP/FTP/BitTorrent). Connection splitting, resume support. |
+
+## Development tools
+
+| Tool | Description |
+|------|-------------|
+| [**lazygit**](https://github.com/jesseduffield/lazygit) | Terminal Git UI. Staging, interactive rebase, conflict resolution. Vim keys. |
+| [**lazydocker**](https://github.com/jesseduffield/lazydocker) | Docker/compose TUI. Live logs, stats, shell access, resource pruning. |
+| [**just**](https://github.com/casey/just) | Command runner like Make, minus the makefile insanity. Explicit recipes, cross-platform. |
+| [**hyperfine**](https://github.com/sharkdp/hyperfine) | Command benchmarking with statistics. Warmup runs, outlier detection, JSON export. |
+
+## Shell enhancement
+
+| Tool | Description |
+|------|-------------|
+| [**starship**](https://github.com/starship/starship) | Cross-shell prompt. Git status, language versions, timing. Sub-ms rendering, TOML config. |
+
+## Documentation
+
+| Tool | Description |
+|------|-------------|
+| [**tealdeer**](https://github.com/dbrgn/tealdeer) | Fast Rust tldr client. 1000+ cached examples, single-command updates. |
+| [**lnav**](https://github.com/tstack/lnav) | Log viewer merging files by timestamp. Syslog/JSON/Apache syntax, SQL queries. |
+| [**tailspin**](https://github.com/bensadeh/tailspin) | Log colorizer for severity, timestamps, IPs, UUIDs. Works as pipe filter. |
+
+## Nix-specific
+
+| Tool | Description |
+|------|-------------|
+| [**nh**](https://github.com/viperML/nh) | Nix helper with better defaults. Auto-diff before system switch. |
+| [**nom**](https://github.com/maralorn/nix-output-monitor) | Colorized Nix output with progress bars. Groups stages, highlights warnings. |
+
+## Resources
+
+- [modern-unix](https://github.com/ibraheemdev/modern-unix) — curated CLI alternatives
+- [Arch utilities list](https://wiki.archlinux.org/title/List_of_applications/Utilities) — comprehensive reference

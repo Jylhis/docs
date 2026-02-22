@@ -1,0 +1,43 @@
+---
+title: "Keybindings"
+description: "Reference table of core keybindings"
+icon: "keyboard"
+---
+
+## Core keybindings
+
+| Key | Action |
+|-----|--------|
+| `C-x g` | Magit status |
+| `C-x p f` | Project find file |
+| `C-x b` | Switch buffer (consult) |
+| `C-s` | Search in buffer |
+| `M-.` | Go to definition (LSP) |
+| `M-,` | Go back |
+| `C-c t` | Toggle between light and dark themes |
+| `C-x j` | Toggle window split direction |
+| `C-c u` | Winner undo window configuration |
+| `C-c r` | Winner redo window configuration |
+
+## Editing
+
+| Key | Action |
+|-----|--------|
+| `C-=` | Expand region (expand-region) |
+| `C->` | Mark next occurrence (multiple-cursors) |
+| `C-<` | Mark previous occurrence (multiple-cursors) |
+| `C-x u` | Visual undo tree (vundo) |
+| `M-o` | Switch to other window |
+| `M-p` | Scroll down one line |
+| `M-n` | Scroll up one line |
+
+## Navigation conventions
+
+Jotain uses Emacs standard conventions throughout. The keybindings above are additions or remaps on top of the standard Emacs defaults.
+
+- `C-` = Control
+- `M-` = Meta (Alt)
+- `S-` = Shift
+- `s-` = Super (Windows/Command key)
+
+Consult (`C-x b`, `C-s`, etc.) and Vertico are used for minibuffer completion. `M-.` / `M-,` invoke Eglot for LSP-aware navigation when a language server is active.

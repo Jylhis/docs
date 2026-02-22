@@ -1,0 +1,82 @@
+---
+title: "Theming"
+description: "Choose a color scheme or define your own custom base16 palette"
+icon: "palette"
+---
+
+Marchyo uses [Stylix](https://stylix.danth.me/) to apply a consistent color scheme across the desktop, terminal, and applications. All theme options live under `marchyo.theme`.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `marchyo.theme.enable` | `bool` | `true` | Enable the Stylix theming system |
+| `marchyo.theme.variant` | `"light"` or `"dark"` | `"dark"` | Preferred light/dark variant |
+| `marchyo.theme.scheme` | `str`, `attrs`, or `null` | `null` | Color scheme to apply |
+
+## Selecting a scheme
+
+Set `marchyo.theme.scheme` to a scheme name from [nix-colors](https://github.com/Misterio77/nix-colors):
+
+```nix
+marchyo.theme.scheme = "dracula";
+```
+
+When `scheme` is `null`, marchyo uses a default based on `variant`:
+
+- `"dark"` → `modus-vivendi-tinted`
+- `"light"` → `modus-operandi-tinted`
+
+## Built-in schemes
+
+| Scheme name | Style |
+|-------------|-------|
+| `"dracula"` | Dark purple |
+| `"gruvbox-dark-medium"` | Dark warm |
+| `"catppuccin-mocha"` | Dark cool |
+| `"modus-vivendi-tinted"` | Dark, high contrast (custom) |
+| `"modus-operandi-tinted"` | Light, high contrast (custom) |
+
+Any scheme name supported by nix-colors can be used in addition to the built-in custom schemes.
+
+## Light/dark variant
+
+The `variant` option sets your preference independently from the specific scheme:
+
+```nix
+marchyo.theme.variant = "light";
+```
+
+This is used as a fallback when `scheme = null`, and may influence how some applications interpret the active palette.
+
+## Custom scheme
+
+You can define your own base16 color scheme by passing an attribute set:
+
+```nix
+marchyo.theme.scheme = {
+  slug = "my-theme";
+  name = "My Theme";
+  author = "you";
+  palette = {
+    base00 = "1a1a2e";  # Background
+    base01 = "16213e";
+    base02 = "0f3460";
+    base03 = "533483";
+    base04 = "e94560";
+    base05 = "f5f5f5";  # Foreground
+    base06 = "ffffff";
+    base07 = "fffaf0";
+    base08 = "e94560";
+    base09 = "f5a623";
+    base0A = "f8e71c";
+    base0B = "7ed321";
+    base0C = "50e3c2";
+    base0D = "4a90e2";
+    base0E = "9b59b6";
+    base0F = "795548";
+  };
+};
+```
+
+The `base00`–`base0F` keys follow the [base16 specification](https://github.com/tinted-theming/home/blob/main/styling.md).

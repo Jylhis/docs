@@ -1,0 +1,69 @@
+---
+title: "Quickstart"
+description: "Add marchyo to your NixOS flake and configure your first system"
+icon: "rocket"
+---
+
+## Option A: Add to an existing flake
+
+### Step 1: Add the flake input
+
+In your `flake.nix`, add marchyo as an input:
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    marchyo.url = "github:Jylhis/marchyo";
+  };
+```
+
+### Step 2: Import the module
+
+Pass marchyo's NixOS module to your system configuration:
+
+```nix
+  outputs = { nixpkgs, marchyo, ... }: {
+    nixosConfigurations.myhost = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        marchyo.nixosModules.default
+        ./hardware-configuration.nix
+        ./configuration.nix
+      ];
+    };
+  };
+}
+```
+
+### Step 3: Configure and rebuild
+
+In your `configuration.nix`, enable the feature flags you need and add your user:
+
+```nix
+{
+  marchyo.desktop.enable = true;
+  marchyo.development.enable = true;
+
+  marchyo.users.myuser = {
+    fullname = "Your Name";
+    email = "your.email@example.com";
+  };
+}
+```
+
+Then rebuild your system:
+
+```bash
+sudo nixos-rebuild switch
+```
+
+## Option B: Bootstrap from the template
+
+If you are starting from scratch, use the provided workstation template:
+
+```bash
+nix flake init -t github:Jylhis/marchyo#workstation
+```
+
+This creates a ready-to-use `flake.nix` with marchyo already configured. Edit the generated files, then run `sudo nixos-rebuild switch`.

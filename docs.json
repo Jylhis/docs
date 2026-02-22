@@ -48,6 +48,57 @@
         ]
       },
       {
+        "tab": "marchyo",
+        "groups": [
+          {
+            "group": "Getting started",
+            "pages": [
+              "marchyo/index",
+              "marchyo/quickstart"
+            ]
+          },
+          {
+            "group": "Configuration",
+            "pages": [
+              "marchyo/feature-flags",
+              "marchyo/keyboard",
+              "marchyo/graphics",
+              "marchyo/theming"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "jotain",
+        "groups": [
+          {
+            "group": "Getting started",
+            "pages": [
+              "jotain/index",
+              "jotain/installation"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "jotain/configuration",
+              "jotain/keybindings"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Knowledge",
+        "groups": [
+          {
+            "group": "Linux",
+            "pages": [
+              "knowledge/linux-toolbox"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "API reference",
         "groups": [
           {
