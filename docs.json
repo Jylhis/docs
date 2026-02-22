@@ -107,7 +107,7 @@
      "vscode"
    ]
   },
-  "description": "Not from and for me",
+  "description": "From me, for me",
   "appearance": {
     "default": "system"
   },
@@ -117,9 +117,6 @@
   "styling": {
     "eyebrows": "breadcrumbs",
     "latex": true
-  },
-  "banner": {
-    "dismissible": true
   },
   "icons": {
     "library": "lucide"
