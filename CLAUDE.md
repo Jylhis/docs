@@ -19,7 +19,7 @@ mint dev
 mint broken-links
 
 # Update the CLI
-npm mint update
+npm i -g mint
 ```
 
 Deployment is automatic via the Mintlify GitHub app when pushing to `main`.
