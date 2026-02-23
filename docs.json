@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "luma",
+  "theme": "linden",
   "name": "Jylhis Docs",
   "colors": {
     "primary": "#16A34A",
