@@ -117,9 +117,6 @@
   "appearance": {
     "default": "system"
   },
-  "fonts": {
-    "family": "Source Sans Pro"
-  },
   "styling": {
     "eyebrows": "breadcrumbs",
     "latex": true
