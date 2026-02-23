@@ -3,9 +3,9 @@
   "theme": "linden",
   "name": "Jylhis Docs",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#FF5522",
+    "light": "#FF5522",
+    "dark": "#FF5522"
   },
   "favicon": "/favicon.svg",
   "navigation": {
@@ -95,6 +95,12 @@
       "href": "https://dashboard.mintlify.com"
     }
   },
+  "background": {
+    "color": {
+      "light": "#FEFCF8",
+      "dark": "#151413"
+    }
+  },
   "contextual": {
     "options": [
      "copy",
@@ -134,5 +140,11 @@
   },
   "interaction": {
     "drilldown": true
+  }
+  "footer": {
+    "socials": {
+      "github": "https://github.com/Jylhis",
+      "linkedin": "https://www.linkedin.com/in/jylhis"
+    }
   }
 }
