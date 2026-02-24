@@ -1,0 +1,54 @@
+---
+title: "Feature flags"
+description: "Enable desktop, development, media, and office environments with a single option"
+icon: "flag"
+---
+
+Feature flags are the primary way to enable large groups of related functionality. Each flag enables a curated stack of packages and settings under one option.
+
+## Available flags
+
+| Option | Default | What it enables |
+|--------|---------|-----------------|
+| `marchyo.desktop.enable` | `false` | Hyprland, Wayland, fonts, audio, Bluetooth |
+| `marchyo.development.enable` | `false` | Git, Docker, Buildah, GitHub CLI, virtualization |
+| `marchyo.media.enable` | `false` | Spotify, MPV, and other media applications |
+| `marchyo.office.enable` | `false` | LibreOffice, Papers, and office tools |
+
+<Info>
+`marchyo.media.enable` and `marchyo.office.enable` are automatically enabled when you set `marchyo.desktop.enable = true`.
+</Info>
+
+## Example configuration
+
+```nix
+{
+  marchyo.desktop.enable = true;
+  marchyo.development.enable = true;
+  # media and office are enabled automatically with desktop
+}
+```
+
+To enable media or office without the full desktop stack:
+
+```nix
+{
+  marchyo.media.enable = true;
+  marchyo.office.enable = true;
+}
+```
+
+## Desktop options
+
+The desktop flag exposes one additional option:
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `marchyo.desktop.useWofi` | `bool` | `false` | Use wofi instead of vicinae as the application launcher |
+
+```nix
+{
+  marchyo.desktop.enable = true;
+  marchyo.desktop.useWofi = true;
+}
+```

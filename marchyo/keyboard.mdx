@@ -1,0 +1,92 @@
+---
+title: "Keyboard & input"
+description: "Configure keyboard layouts and input method engines for CJK and other languages"
+icon: "keyboard"
+---
+
+Marchyo manages all keyboard input through fcitx5, which handles both standard layouts and input method engines (IME) for CJK languages. Basic layouts are also configured in XKB for TTY/console compatibility.
+
+## `marchyo.keyboard.layouts`
+
+The `layouts` option accepts a list where each entry is either:
+
+- A **string** — a simple keyboard layout code (e.g., `"us"`, `"fi"`, `"de"`)
+- An **attribute set** — full configuration with an optional IME
+
+```nix
+marchyo.keyboard.layouts = [
+  "us"                                        # Simple layout
+  "fi"                                        # Simple layout
+  { layout = "us"; variant = "intl"; }       # US international with dead keys
+  { layout = "cn"; ime = "pinyin"; }         # Chinese with Pinyin IME
+  { layout = "jp"; ime = "mozc"; }           # Japanese with Mozc IME
+  { layout = "kr"; ime = "hangul"; }         # Korean with Hangul IME
+];
+```
+
+Switch between layouts using **Super+Space** (configured via XKB `grp:win_space_toggle`).
+
+## Layout attribute set options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `layout` | `str` | — | Layout code (`"us"`, `"fi"`, `"cn"`, `"jp"`, `"kr"`, …) |
+| `variant` | `str` | `""` | Layout variant (`"intl"`, `"dvorak"`, …) |
+| `ime` | enum or null | `null` | IME engine to activate for this layout |
+| `label` | `str` or null | `null` | Display label (auto-generated if null) |
+
+### Available IME values
+
+| Value | Engine | Language |
+|-------|--------|----------|
+| `"pinyin"` | fcitx5-chinese-addons | Chinese |
+| `"mozc"` | fcitx5-mozc | Japanese |
+| `"hangul"` | fcitx5-hangul | Korean |
+| `"unicode"` | built-in | Unicode character picker |
+
+## IME activation options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `marchyo.keyboard.autoActivateIME` | `bool` | `true` | Automatically activate IME when switching to a layout that has `ime` set |
+| `marchyo.keyboard.imeTriggerKey` | `listOf str` | `["Super+I"]` | Key combinations to manually toggle IME on/off |
+
+When `autoActivateIME = true` (the default), switching to a layout with an IME immediately activates it. Set it to `false` if you want to trigger the IME manually with `imeTriggerKey` instead.
+
+```nix
+{
+  marchyo.keyboard.autoActivateIME = false;
+  marchyo.keyboard.imeTriggerKey = [ "Super+I" "Alt+grave" ];
+}
+```
+
+## XKB options
+
+Use `marchyo.keyboard.options` to pass raw XKB options to fcitx5:
+
+```nix
+marchyo.keyboard.options = [
+  "grp:win_space_toggle"   # Super+Space switches layout (default)
+  "ctrl:nocaps"            # Caps Lock → Control
+];
+```
+
+## Migration note
+
+The `marchyo.inputMethod.enable` option has been **removed**. Migrate your configuration as follows:
+
+```nix
+# OLD (no longer works)
+marchyo.inputMethod.enable = true;
+marchyo.inputMethod.enableCJK = true;
+marchyo.keyboard.layouts = [ "us" "fi" ];
+
+# NEW
+marchyo.keyboard.layouts = [
+  "us"
+  "fi"
+  { layout = "cn"; ime = "pinyin"; }
+  # { layout = "jp"; ime = "mozc"; }
+  # { layout = "kr"; ime = "hangul"; }
+];
+```
