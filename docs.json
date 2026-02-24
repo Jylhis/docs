@@ -172,9 +172,6 @@
     "eyebrows": "breadcrumbs",
     "latex": true
   },
-  "icons": {
-    "library": "lucide"
-  },
   "api": {
     "playground": {
       "display": "interactive"
