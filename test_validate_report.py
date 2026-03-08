@@ -25,10 +25,10 @@ def test_validate_json_report_invalid(tmp_path, capsys):
 
     validate_json_report(str(p))
     captured = capsys.readouterr()
-    assert "Error loading JSON" in captured.out
+    assert "Error loading JSON" in captured.err
 
 def test_validate_json_report_nonexistent(capsys):
     validate_json_report("nonexistent_file.json")
     captured = capsys.readouterr()
-    assert "Error loading JSON" in captured.out
-    assert "No such file or directory" in captured.out
+    assert "Error loading JSON" in captured.err
+    assert "No such file or directory" in captured.err
