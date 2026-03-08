@@ -114,7 +114,7 @@ Optional frontmatter fields:
 
 ## Organize content
 
-When a user asks about anything related to site-wide configurations, start by understanding the [global settings](https://www.mintlify.com/docs/organize/settings). See if a setting in the `docs.json` file can be updated to achieve what the user wants.
+When a user asks about anything related to site-wide configurations, start by understanding the [global settings](https://www.mintlify.com/docs/settings/global). See if a setting in the `docs.json` file can be updated to achieve what the user wants.
 
 ### Navigation
 
