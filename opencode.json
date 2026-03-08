@@ -1,0 +1,9 @@
+{
+  "mcp": {
+    "mintlify": {
+      "type": "remote",
+      "url": "https://mintlify.com/docs/mcp",
+      "enabled": true
+    }
+  }
+}
