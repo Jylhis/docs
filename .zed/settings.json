@@ -1,0 +1,10 @@
+{
+  "context_servers": {
+    "mintlify": {
+      "source": "custom",
+      "type": "http",
+      "url": "https://mintlify.com/docs/mcp",
+      "headers": {}
+    }
+  }
+}
