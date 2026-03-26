@@ -1,0 +1,61 @@
+---
+title: "marchyo"
+description: "A modular NixOS configuration flake with sensible defaults"
+icon: "snowflake"
+---
+
+[![FlakeHub](https://img.shields.io/endpoint?url=https://flakehub.com/f/Jylhis/marchyo/badge)](https://flakehub.com/flake/Jylhis/marchyo)
+
+Marchyo is a modular NixOS configuration flake providing a curated set of system and home-manager configurations with sensible defaults. It organizes functionality into feature-flagged modules that you enable as needed.
+
+## Features
+
+- **Modular architecture** — organized modules for desktop, development, media, and office environments
+- **Feature flags** — simple enable flags that configure entire stacks
+- **Home Manager integration** — seamless user environment management
+- **Hardware support** — integration with `nixos-hardware` for common devices
+- **Extensive configuration** — a rich set of custom options for fine-grained control
+
+## Get started
+
+<Card
+  title="Quickstart"
+  icon="rocket"
+  href="/marchyo/quickstart"
+  horizontal
+>
+  Add marchyo to your flake and configure your first system in three steps.
+</Card>
+
+## Configuration
+
+<Columns cols={2}>
+  <Card
+    title="Feature flags"
+    icon="flag"
+    href="/marchyo/feature-flags"
+  >
+    Enable desktop, development, media, and office environments.
+  </Card>
+  <Card
+    title="Keyboard & input"
+    icon="keyboard"
+    href="/marchyo/keyboard"
+  >
+    Configure layouts and input method engines for CJK and other languages.
+  </Card>
+  <Card
+    title="Graphics"
+    icon="monitor"
+    href="/marchyo/graphics"
+  >
+    Set up GPU vendors, NVIDIA driver options, and PRIME hybrid graphics.
+  </Card>
+  <Card
+    title="Theming"
+    icon="palette"
+    href="/marchyo/theming"
+  >
+    Choose a color scheme or define your own custom base16 palette.
+  </Card>
+</Columns>

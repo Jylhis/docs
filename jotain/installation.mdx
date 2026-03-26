@@ -1,0 +1,76 @@
+---
+title: "Installation"
+description: "Add jotain to your home-manager flake and enable it"
+icon: "download"
+---
+
+Jotain is installed as a home-manager module. It manages your Emacs configuration, packages, runtime dependencies, and daemon setup automatically.
+
+## Step 1: Add the flake input
+
+In your `flake.nix`, add jotain as an input alongside home-manager:
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    home-manager.url = "github:nix-community/home-manager";
+    jotain.url = "github:Jylhis/jotain";
+  };
+```
+
+## Step 2: Import the home module
+
+Pass jotain's home module to your home-manager configuration:
+
+```nix
+  outputs = { nixpkgs, home-manager, jotain, ... }: {
+    homeConfigurations."<your-username>" = home-manager.lib.homeManagerConfiguration {
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      modules = [
+        jotain.homeModules.default
+        ./home.nix
+      ];
+    };
+  };
+}
+```
+
+## Step 3: Enable and switch
+
+In your `home.nix`, enable the module:
+
+```nix
+{
+  programs.jotain.enable = true;
+}
+```
+
+Then apply the configuration:
+
+```bash
+home-manager switch
+```
+
+## Daemon management
+
+By default, jotain starts Emacs as a systemd (Linux) or launchd (macOS) service. Use these commands to manage it:
+
+| Command | Description |
+|---------|-------------|
+| `systemctl --user status emacs.service` | Check daemon status |
+| `systemctl --user restart emacs.service` | Restart after config changes |
+| `journalctl --user -u emacs.service` | View daemon logs |
+| `emacsclient -c` | Open a new GUI frame |
+| `emacsclient -t` | Open a terminal frame |
+
+To disable the daemon and use Emacs directly instead:
+
+```nix
+{
+  programs.jotain = {
+    enable = true;
+    enableDaemon = false;
+  };
+}
+```

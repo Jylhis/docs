@@ -1,0 +1,50 @@
+---
+title: "jotain"
+description: "A modern, reproducible Emacs configuration managed with Nix Flakes"
+icon: "zap"
+---
+
+Jotain is a modern, modular Emacs configuration managed with Nix Flakes, emphasizing performance and reproducible development. It provides a complete development environment with LSP support, modern completion, Git integration, and sensible defaults — all pinned and reproducible.
+
+## Features
+
+- **Reproducible** — managed by a Nix Flake for consistent environments across machines
+- **Modular** — configuration split into logical elisp modules for easy customization
+- **Performant** — `early-init.el` optimized for fast startup; GC tuning and native compilation enabled
+- **Integrated** — home-manager module for zero-friction installation and configuration
+- **Comprehensive** — packages for development, writing, Git, and more, all managed by Nix
+
+## Supported systems
+
+| System | Support |
+|--------|---------|
+| `x86_64-linux` | Full |
+| `aarch64-linux` | Full |
+| `x86_64-darwin` | Full |
+| `aarch64-darwin` | Full (Apple Silicon) |
+
+## Get started
+
+<Columns cols={2}>
+  <Card
+    title="Installation"
+    icon="download"
+    href="/jotain/installation"
+  >
+    Add jotain to your home-manager flake and enable it in three steps.
+  </Card>
+  <Card
+    title="Configuration"
+    icon="settings"
+    href="/jotain/configuration"
+  >
+    Module options, custom.el, included LSP servers and tree-sitter grammars.
+  </Card>
+  <Card
+    title="Keybindings"
+    icon="keyboard"
+    href="/jotain/keybindings"
+  >
+    Reference table of core keybindings.
+  </Card>
+</Columns>

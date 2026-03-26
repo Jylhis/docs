@@ -1,0 +1,87 @@
+---
+title: "Configuration"
+description: "Module options, custom.el, LSP servers, and tree-sitter grammars"
+icon: "settings"
+---
+
+## Module options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `programs.jotain.enable` | `bool` | `false` | Enable the jotain Emacs configuration |
+| `programs.jotain.enableDaemon` | `bool` | `true` | Run Emacs as a systemd/launchd service |
+| `programs.jotain.includeRuntimeDeps` | `bool` | `true` | Install runtime dependencies (LSP servers, CLI tools, fonts) |
+| `programs.jotain.extraPackages` | `epkgs → [pkg]` | `epkgs: []` | Add extra Emacs packages |
+| `programs.jotain.package` | `package` | `pkgs.jotain` | Override the jotain package |
+
+### Extra packages
+
+Add Emacs packages that are not bundled with jotain:
+
+```nix
+programs.jotain.extraPackages = epkgs: [
+  epkgs.pdf-tools
+  epkgs.org-roam
+];
+```
+
+## User customization
+
+Add your own elisp to `~/.config/emacs/custom.el`. Jotain loads this file automatically on startup if it exists, and it persists across home-manager rebuilds.
+
+```elisp
+;; ~/.config/emacs/custom.el
+
+;; Example: set your preferred font size
+(set-face-attribute 'default nil :height 140)
+
+;; Example: add a personal keybinding
+(global-set-key (kbd "C-c n") #'my/open-notes)
+```
+
+## Included LSP servers
+
+When `includeRuntimeDeps = true` (the default), the following language servers are installed:
+
+| Server | Language |
+|--------|----------|
+| `nil` | Nix |
+| `gopls` | Go |
+| `typescript-language-server` | TypeScript / JavaScript |
+| `yaml-language-server` | YAML |
+| `dockerfile-language-server` | Dockerfile |
+| `marksman` | Markdown |
+| `clang-tools` | C / C++ |
+
+LSP support is provided by [Eglot](https://www.gnu.org/software/emacs/manual/html_node/eglot/), the built-in LSP client in Emacs 29+.
+
+## Included CLI tools
+
+| Tool | Purpose |
+|------|---------|
+| `ripgrep` | Fast grep (used by consult-ripgrep) |
+| `fd` | Fast file finder |
+| `direnv` | Per-directory environments |
+| `zoxide` | Smart directory jumping |
+| `sops` | Secrets management |
+| `multimarkdown` | Markdown processing |
+
+## Tree-sitter grammars
+
+All tree-sitter grammars available in nixpkgs are included automatically. They are installed to a directory on `TREE_SITTER_DIR` so Emacs can find them without additional configuration.
+
+## Fonts
+
+The following fonts are installed when `includeRuntimeDeps = true`:
+
+- JetBrains Mono
+- Fira Code
+- Iosevka
+- Cascadia Code
+- Inter
+- Source Serif Pro
+- Noto Color Emoji
+
+<Tip>
+If fonts are not displaying correctly, ensure `fonts.fontconfig.enable = true` is set in your home-manager configuration.
+</Tip>

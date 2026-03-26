@@ -1,0 +1,101 @@
+---
+title: "Graphics"
+description: "Configure GPU vendors, NVIDIA driver options, and PRIME hybrid graphics"
+icon: "monitor"
+---
+
+Marchyo configures graphics drivers based on the GPU vendors present in your system. All graphics options live under `marchyo.graphics`.
+
+## Declaring your GPU vendors
+
+Set `marchyo.graphics.vendors` to a list of the GPU vendors in your system:
+
+```nix
+# Single NVIDIA GPU
+marchyo.graphics.vendors = [ "nvidia" ];
+
+# Intel + NVIDIA hybrid laptop
+marchyo.graphics.vendors = [ "intel" "nvidia" ];
+
+# AMD + NVIDIA hybrid laptop
+marchyo.graphics.vendors = [ "amd" "nvidia" ];
+```
+
+| Value | Description |
+|-------|-------------|
+| `"intel"` | Intel integrated graphics (iGPU) |
+| `"amd"` | AMD GPU (integrated or discrete) |
+| `"nvidia"` | NVIDIA discrete GPU |
+
+Find your GPU with:
+
+```bash
+lspci | grep -E 'VGA|3D'
+```
+
+<Info>
+When `vendors` is empty, Intel packages are applied on x86_64 for backward compatibility.
+</Info>
+
+## NVIDIA options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `marchyo.graphics.nvidia.open` | `bool` | `true` | Use NVIDIA's open-source kernel modules |
+| `marchyo.graphics.nvidia.powerManagement` | `bool` | `false` | Enable experimental power management |
+
+### Open kernel modules
+
+The open modules are recommended for Turing (RTX 20xx) and newer GPUs, and **required** for RTX 50xx series. Set to `false` for older GPUs (Maxwell, Pascal, Volta):
+
+```nix
+marchyo.graphics.nvidia.open = false;  # For older GPUs
+```
+
+### Power management
+
+Enabling `powerManagement` may improve battery life on laptops with NVIDIA GPUs, but can cause issues on some systems:
+
+```nix
+marchyo.graphics.nvidia.powerManagement = true;
+```
+
+## PRIME (hybrid graphics)
+
+PRIME is required for laptops that have both an integrated GPU and a discrete NVIDIA GPU. Enable it and provide the PCI bus IDs for each GPU:
+
+```nix
+marchyo.graphics = {
+  vendors = [ "intel" "nvidia" ];
+  prime = {
+    enable = true;
+    intelBusId = "PCI:0:2:0";
+    nvidiaBusId = "PCI:1:0:0";
+    mode = "offload";  # default
+  };
+};
+```
+
+### Finding bus IDs
+
+```bash
+lspci | grep -E 'VGA|3D'
+```
+
+The output shows hex addresses like `00:02.0` — convert to decimal and use the format `PCI:bus:device:function`. For example, `01:00.0` becomes `PCI:1:0:0`.
+
+### PRIME modes
+
+| Mode | Description |
+|------|-------------|
+| `"offload"` | On-demand rendering (default). Run `nvidia-offload <command>` to use the dGPU. |
+| `"sync"` | Always use the discrete GPU. Best performance, highest power draw. |
+| `"reverse-sync"` | iGPU drives the display, dGPU handles compute. |
+
+### Bus ID options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `marchyo.graphics.prime.intelBusId` | `str` | `""` | PCI bus ID of the Intel iGPU |
+| `marchyo.graphics.prime.amdgpuBusId` | `str` | `""` | PCI bus ID of the AMD iGPU |
+| `marchyo.graphics.prime.nvidiaBusId` | `str` | `""` | PCI bus ID of the NVIDIA dGPU |
