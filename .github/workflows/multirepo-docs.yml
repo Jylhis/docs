@@ -19,55 +19,13 @@ jobs:
       - name: Checkout docs repo
         uses: actions/checkout@v4
 
-      - name: Fetch Marchyo docs
-        continue-on-error: true
-        uses: actions/checkout@v4
+      - name: Aggregate docs from subrepos
+        uses: mintlify/multirepo-action@v0.15
         with:
-          repository: jylhis/Marchyo
-          path: _tmp/marchyo
-          sparse-checkout: docs
-          sparse-checkout-cone-mode: true
-
-      - name: Copy Marchyo docs
-        continue-on-error: true
-        run: |
-          if [ -d "_tmp/marchyo/docs" ]; then
-            echo "Copying Marchyo docs into marchyo/"
-            cp -r _tmp/marchyo/docs/* marchyo/
-          else
-            echo "No docs directory found in Marchyo — skipping"
-          fi
-
-      - name: Fetch Jotain docs
-        continue-on-error: true
-        uses: actions/checkout@v4
-        with:
-          repository: Jylhis/Jotain
-          path: _tmp/jotain
-          sparse-checkout: docs
-          sparse-checkout-cone-mode: true
-
-      - name: Copy Jotain docs
-        continue-on-error: true
-        run: |
-          if [ -d "_tmp/jotain/docs" ]; then
-            echo "Copying Jotain docs into jotain/"
-            cp -r _tmp/jotain/docs/* jotain/
-          else
-            echo "No docs directory found in Jotain — skipping"
-          fi
-
-      - name: Clean up temp files
-        run: rm -rf _tmp
-
-      - name: Push aggregated docs
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add marchyo/ jotain/
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "docs: aggregate multi-repo documentation"
-            git push
-          fi
+          token: ${{ secrets.PUSH_TOKEN }}
+          target-branch: docs
+          repos: |
+            - owner: jylhis
+              repo: Marchyo
+            - owner: Jylhis
+              repo: Jotain
