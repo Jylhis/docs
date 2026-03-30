@@ -27,7 +27,10 @@ jobs:
           repos: |
             - owner: jylhis
               repo: Marchyo
+              subdirectory: docs
             - owner: jylhis
               repo: Jotain
+              subdirectory: docs
             - owner: jylhis
               repo: jstack
+              subdirectory: docs
