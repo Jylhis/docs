@@ -27,7 +27,7 @@ jobs:
           repos: |
             - owner: jylhis
               repo: Marchyo
-            - owner: Jylhis
+            - owner: jylhis
               repo: Jotain
             - owner: jylhis
               repo: jstack
