@@ -19,21 +19,151 @@ jobs:
       - name: Checkout docs repo
         uses: actions/checkout@v4
 
-      - name: Create mint.json symlink for multirepo-action compatibility
-        run: ln -s docs.json mint.json
-
       - name: Aggregate docs from subrepos
-        uses: mintlify/multirepo-action@v0.16
-        with:
-          token: ${{ secrets.PUSH_TOKEN }}
-          target-branch: docs
-          repos: |
-            - owner: jylhis
-              repo: Marchyo
-              subdirectory: docs
-            - owner: jylhis
-              repo: Jotain
-              subdirectory: docs
-            - owner: jylhis
-              repo: jstack
-              subdirectory: docs
+        env:
+          GITHUB_TOKEN: ${{ secrets.PUSH_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          TARGET_BRANCH="docs"
+
+          # --- Switch to target branch ---
+          if git ls-remote --heads --exit-code origin "$TARGET_BRANCH" >/dev/null 2>&1; then
+            git fetch -u origin "${TARGET_BRANCH}:${TARGET_BRANCH}"
+            git symbolic-ref HEAD "refs/heads/${TARGET_BRANCH}"
+          else
+            git checkout -b "$TARGET_BRANCH"
+          fi
+
+          # --- Configure git auth ---
+          ENCODED_TOKEN=$(echo -n "x-access-token:${GITHUB_TOKEN}" | base64)
+          git config --local "http.https://github.com/.extraheader" "Authorization: basic ${ENCODED_TOKEN}"
+
+          # --- Clone each subrepo and extract docs ---
+          declare -A REPOS=(
+            ["Marchyo"]="docs"
+            ["Jotain"]="docs"
+            ["jstack"]="docs"
+          )
+
+          REPO_NAMES=()
+          for repo in "${!REPOS[@]}"; do
+            subdir="${REPOS[$repo]}"
+            echo "::group::Clone jylhis/$repo"
+
+            rm -rf "$repo"
+            git clone --depth=1 "https://x-access-token:${GITHUB_TOKEN}@github.com/jylhis/${repo}" "_clone_${repo}"
+
+            if [ -n "$subdir" ]; then
+              mv "_clone_${repo}/${subdir}" "_tmp_${repo}"
+              rm -rf "_clone_${repo}"
+              mv "_tmp_${repo}" "$repo"
+            else
+              rm -rf "_clone_${repo}/.git"
+              mv "_clone_${repo}" "$repo"
+            fi
+
+            REPO_NAMES+=("$repo")
+            echo "::endgroup::"
+          done
+
+          # --- Merge navigation from each subrepo into main docs.json ---
+          node -e '
+            const fs = require("fs");
+            const path = require("path");
+
+            const repos = JSON.parse(process.argv[1]);
+            const mainConfig = JSON.parse(fs.readFileSync("docs.json", "utf-8"));
+
+            function prependPrefix(group, prefix) {
+              return {
+                ...group,
+                pages: group.pages.map(entry =>
+                  typeof entry === "string"
+                    ? prefix + "/" + entry
+                    : prependPrefix(entry, prefix)
+                ),
+              };
+            }
+
+            function mergeNavigation(main, sub, prefix) {
+              const merged = { ...main };
+
+              if (sub.groups) {
+                const prefixed = sub.groups.map(g => prependPrefix(g, prefix));
+                merged.groups = [...(merged.groups || []), ...prefixed];
+              }
+
+              if (sub.pages) {
+                const prefixed = sub.pages.map(p => prefix + "/" + p);
+                merged.pages = [...(merged.pages || []), ...prefixed];
+              }
+
+              // Flatten complex sub-repo structures (tabs, etc.) into a single group
+              if (sub.tabs || sub.languages || sub.versions || sub.dropdowns || sub.anchors) {
+                const fallback = { group: prefix, pages: [] };
+                for (const key of ["tabs", "languages", "versions", "dropdowns", "anchors"]) {
+                  if (!sub[key]) continue;
+                  for (const entry of sub[key]) {
+                    if (entry.pages) {
+                      fallback.pages.push(...entry.pages.map(p => prefix + "/" + p));
+                    }
+                    if (entry.groups) {
+                      for (const g of entry.groups) {
+                        const flat = g.pages
+                          .filter(p => typeof p === "string")
+                          .map(p => prefix + "/" + p);
+                        fallback.pages.push(...flat);
+                      }
+                    }
+                  }
+                }
+                if (fallback.pages.length > 0) {
+                  merged.groups = [...(merged.groups || []), fallback];
+                }
+              }
+
+              return merged;
+            }
+
+            for (const repo of repos) {
+              const subConfigPath = path.join(repo, "docs.json");
+              if (!fs.existsSync(subConfigPath)) {
+                // Fall back to mint.json for older repos
+                const mintPath = path.join(repo, "mint.json");
+                if (!fs.existsSync(mintPath)) continue;
+                const mintConfig = JSON.parse(fs.readFileSync(mintPath, "utf-8"));
+                // Old mint.json: navigation is a flat array of groups
+                if (Array.isArray(mintConfig.navigation)) {
+                  const prefixed = mintConfig.navigation.map(g => prependPrefix(g, repo));
+                  mainConfig.navigation.groups = [
+                    ...(mainConfig.navigation.groups || []),
+                    ...prefixed,
+                  ];
+                }
+                fs.unlinkSync(mintPath);
+                continue;
+              }
+
+              const subConfig = JSON.parse(fs.readFileSync(subConfigPath, "utf-8"));
+              mainConfig.navigation = mergeNavigation(
+                mainConfig.navigation,
+                subConfig.navigation,
+                repo
+              );
+              fs.unlinkSync(subConfigPath);
+            }
+
+            fs.writeFileSync("docs.json", JSON.stringify(mainConfig, null, 2));
+          ' "$(printf '%s\n' "${REPO_NAMES[@]}" | jq -R . | jq -s .)"
+
+          # --- Commit and push ---
+          git add .
+          if ! git diff-index --quiet --cached HEAD -- 2>/dev/null; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "update"
+            git push origin "$TARGET_BRANCH"
+          else
+            echo "No changes detected, skipping..."
+          fi
