@@ -1,0 +1,33 @@
+name: Aggregate multi-repo docs
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    # Daily at midnight UTC
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: aggregate-docs
+  cancel-in-progress: true
+
+jobs:
+  aggregate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout docs repo
+        uses: actions/checkout@v4
+
+      - name: Aggregate docs from subrepos
+        uses: mintlify/multirepo-action@v0.15
+        with:
+          token: ${{ secrets.PUSH_TOKEN }}
+          target-branch: docs
+          repos: |
+            - owner: jylhis
+              repo: Marchyo
+            - owner: jylhis
+              repo: Jotain
+            - owner: jylhis
+              repo: jstack
