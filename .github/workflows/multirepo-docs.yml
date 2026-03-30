@@ -19,11 +19,8 @@ jobs:
       - name: Checkout docs repo
         uses: actions/checkout@v4
 
-      - name: Create mint.json symlink for multirepo-action compatibility
-        run: ln -s docs.json mint.json
-
       - name: Aggregate docs from subrepos
-        uses: mintlify/multirepo-action@v0.16
+        uses: mintlify/multirepo-action@2a8d0867b0cffdafe0959d1d9c497cba48987110 # post-v0.16: docs.json tabs support
         with:
           token: ${{ secrets.PUSH_TOKEN }}
           target-branch: docs
