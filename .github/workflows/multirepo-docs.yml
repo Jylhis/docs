@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout docs repo
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Aggregate docs from subrepos
         env:
@@ -27,6 +29,10 @@ jobs:
 
           TARGET_BRANCH="docs"
 
+          # --- Configure git auth (global so it applies to clones too) ---
+          ENCODED_TOKEN=$(echo -n "x-access-token:${GITHUB_TOKEN}" | base64)
+          git config --global "http.https://github.com/.extraheader" "Authorization: basic ${ENCODED_TOKEN}"
+
           # --- Switch to target branch ---
           if git ls-remote --heads --exit-code origin "$TARGET_BRANCH" >/dev/null 2>&1; then
             git fetch -u origin "${TARGET_BRANCH}:${TARGET_BRANCH}"
@@ -34,10 +40,6 @@ jobs:
           else
             git checkout -b "$TARGET_BRANCH"
           fi
-
-          # --- Configure git auth ---
-          ENCODED_TOKEN=$(echo -n "x-access-token:${GITHUB_TOKEN}" | base64)
-          git config --local "http.https://github.com/.extraheader" "Authorization: basic ${ENCODED_TOKEN}"
 
           # --- Clone each subrepo and extract docs ---
           declare -A REPOS=(
@@ -52,7 +54,7 @@ jobs:
             echo "::group::Clone jylhis/$repo"
 
             rm -rf "$repo"
-            git clone --depth=1 "https://x-access-token:${GITHUB_TOKEN}@github.com/jylhis/${repo}" "_clone_${repo}"
+            git clone --depth=1 "https://github.com/jylhis/${repo}" "_clone_${repo}"
 
             if [ -n "$subdir" ]; then
               mv "_clone_${repo}/${subdir}" "_tmp_${repo}"
