@@ -99,7 +99,12 @@
     "dark": "/logo/dark.svg"
   },
   "navbar": {
-    "links": [],
+    "links": [
+      {
+        "label": "jylhis.com",
+        "href": "https://jylhis.com"
+      }
+    ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
