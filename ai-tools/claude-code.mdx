@@ -9,6 +9,7 @@ Set up Claude Code to help you write and maintain your Mintlify documentation.
 ## Prerequisites
 
 - Active Claude subscription (Pro, Max, or API access)
+- Node.js installed
 
 ## Setup
 
@@ -19,9 +20,15 @@ Set up Claude Code to help you write and maintain your Mintlify documentation.
   ```
 </Step>
 
-<Step title="Install the Mintlify skill">
-  In your docs directory, run:
+<Step title="Navigate to your docs directory">
+  Open a terminal in the root of your documentation repository where `docs.json` is located.
 
+  ```bash
+  cd path/to/your/docs
+  ```
+</Step>
+
+<Step title="Install the Mintlify skill">
   ```bash
   npx skills add https://mintlify.com/docs
   ```
@@ -32,12 +39,58 @@ Set up Claude Code to help you write and maintain your Mintlify documentation.
 
 <Step title="Customize project instructions">
   Edit `AGENTS.md` in your project root to add project-specific terminology,
-  style preferences, and content boundaries.
+  style preferences, and content boundaries. Claude Code reads this file
+  automatically when it starts.
 </Step>
 
-<Step title="Start writing with Claude Code">
+<Step title="Start Claude Code">
   ```bash
   claude
   ```
 </Step>
 </Steps>
+
+## Example prompts
+
+Once Claude Code is running in your docs directory, try these prompts to get started:
+
+<AccordionGroup>
+  <Accordion title="Create a new page">
+    ```
+    Create a new page at guides/authentication.mdx about setting up OAuth.
+    Add it to the navigation in docs.json under the Guides tab.
+    ```
+  </Accordion>
+
+  <Accordion title="Edit existing content">
+    ```
+    Update the quickstart page to include a Docker-based setup option.
+    ```
+  </Accordion>
+
+  <Accordion title="Add API documentation">
+    ```
+    Add a new POST endpoint to openapi.json for creating a user,
+    then create the corresponding API reference page.
+    ```
+  </Accordion>
+
+  <Accordion title="Fix broken links">
+    ```
+    Run mint broken-links and fix any issues found.
+    ```
+  </Accordion>
+
+  <Accordion title="Restructure navigation">
+    ```
+    Move the AI tools section into its own tab in docs.json.
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Tips
+
+- **Preview your changes** by running `mint dev` in a separate terminal. Claude Code can also run this for you.
+- **Check links** after adding or moving pages by asking Claude Code to run `mint broken-links`.
+- **Use `CLAUDE.md`** for instructions that apply to all AI tools in your project, and `AGENTS.md` for documentation-specific guidance.
+- **Be specific** in your prompts. Include file paths, page titles, and the section of `docs.json` you want modified.
