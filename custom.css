@@ -1,0 +1,19 @@
+/* Syntax highlighting overrides to match jylhis.com color palette */
+
+:root {
+  --mint-token-keyword: #8b5a3c;
+  --mint-token-string: #6b7f3a;
+  --mint-token-comment: #9a9080;
+  --mint-token-constant: #7b6b8a;
+  --mint-token-function: #a0623c;
+  --mint-token-tag: #5a7a8a;
+}
+
+[data-theme="dark"] {
+  --mint-token-keyword: #e8a070;
+  --mint-token-string: #7daf68;
+  --mint-token-comment: #6b6157;
+  --mint-token-constant: #a090c0;
+  --mint-token-function: #c8885a;
+  --mint-token-tag: #7aaaba;
+}
