@@ -1,11 +1,11 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "linden",
+  "theme": "willow",
   "name": "Jylhis Docs",
   "colors": {
-    "primary": "#FF5522",
-    "light": "#FF5522",
-    "dark": "#FF5522"
+    "primary": "#b5703c",
+    "light": "#d4884a",
+    "dark": "#8e5530"
   },
   "favicon": "/favicon.svg",
   "navigation": {
@@ -82,14 +82,14 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "Projects",
+          "href": "https://www.jylhis.com/projects/",
+          "icon": "folder-open"
         },
         {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "GitHub",
+          "href": "https://github.com/Jylhis",
+          "icon": "github"
         }
       ]
     }
@@ -107,14 +107,14 @@
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "label": "Website",
+      "href": "https://www.jylhis.com"
     }
   },
   "background": {
     "color": {
-      "light": "#FEFCF8",
-      "dark": "#151413"
+      "light": "#faf7f2",
+      "dark": "#1a1714"
     }
   },
   "contextual": {
@@ -133,9 +133,16 @@
   "appearance": {
     "default": "system"
   },
+  "css": "/custom.css",
   "styling": {
     "eyebrows": "breadcrumbs",
-    "latex": true
+    "latex": true,
+    "codeblocks": {
+      "themes": {
+        "light": "everforest-light",
+        "dark": "everforest-dark"
+      }
+    }
   },
   "api": {
     "playground": {
