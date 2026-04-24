@@ -24,6 +24,7 @@
         ["Marchyo"]="docs"
         ["Jotain"]="docs"
         ["jstack"]="docs"
+        ["Makework"]="docs"
       )
 
       REPO_NAMES=()
