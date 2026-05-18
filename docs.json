@@ -77,6 +77,93 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "jotain",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "jotain/introduction",
+              "jotain/installation",
+              "jotain/quickstart"
+            ]
+          },
+          {
+            "group": "Architecture",
+            "pages": [
+              "jotain/architecture/overview",
+              "jotain/architecture/nix-build",
+              "jotain/architecture/modules"
+            ]
+          },
+          {
+            "group": "Configuration",
+            "pages": [
+              "jotain/configuration/init",
+              "jotain/configuration/early-init",
+              "jotain/configuration/packages",
+              "jotain/configuration/package-reference"
+            ]
+          },
+          {
+            "group": "Usage",
+            "pages": [
+              "jotain/usage/launching"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "jotain/compilation-mode",
+              "jotain/finding-information-in-emacs",
+              "jotain/keybindings",
+              "jotain/setting-variables",
+              "jotain/inspiration"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "marchyo",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "marchyo/introduction",
+              "marchyo/quickstart"
+            ]
+          },
+          {
+            "group": "Configuration",
+            "pages": [
+              "marchyo/configuration/feature-flags",
+              "marchyo/configuration/users",
+              "marchyo/configuration/localization",
+              "marchyo/configuration/theming",
+              "marchyo/configuration/keyboard",
+              "marchyo/configuration/graphics",
+              "marchyo/configuration/default-apps",
+              "marchyo/configuration/performance"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "marchyo/guides/workstation-template",
+              "marchyo/guides/migration"
+            ]
+          },
+          {
+            "group": "Development",
+            "pages": [
+              "marchyo/development/architecture",
+              "marchyo/development/adding-modules",
+              "marchyo/development/testing",
+              "marchyo/development/contributing"
+            ]
+          }
+        ]
       }
     ],
     "global": {
@@ -119,15 +206,15 @@
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   },
   "description": "From me, for me",
   "appearance": {

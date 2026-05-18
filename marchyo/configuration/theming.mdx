@@ -1,0 +1,47 @@
+---
+title: Theming
+description: Customize system appearance with Stylix and base16 color schemes
+---
+
+Marchyo uses [Stylix](https://github.com/danth/stylix) for consistent theming across GTK, Qt, terminal applications, and the Hyprland compositor.
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `marchyo.theme.enable` | `bool` | `true` | Enable the Stylix theming system |
+| `marchyo.theme.variant` | `"dark"` or `"light"` | `"dark"` | Theme variant preference |
+| `marchyo.theme.scheme` | `string`, `attrs`, or `null` | `null` | **(Not yet implemented)** Color scheme to use |
+
+## Basic usage
+
+```nix
+marchyo.theme = {
+  enable = true;
+  variant = "dark";
+};
+```
+
+<Warning>
+The `marchyo.theme.scheme` option is defined but not yet implemented. Setting it will have no effect.
+The theme is currently determined solely by the `variant` option.
+</Warning>
+
+## Color schemes
+
+The theme is determined by `marchyo.theme.variant`:
+
+| Variant | Scheme used |
+|---------|-------------|
+| `"dark"` | `nord` |
+| `"light"` | `nord-light` |
+
+## Light mode
+
+To use the light theme:
+
+```nix
+marchyo.theme = {
+  variant = "light";
+};
+```

@@ -1,0 +1,138 @@
+---
+title: Modules
+description: Elisp modules that make up the Jotain configuration
+---
+
+# Modules
+
+Jotain's Elisp configuration is split across `lisp/init-*.el`, one file per concern. Each file is self-contained: a package that only exists to enhance a built-in (e.g. `dirvish` → `dired`, `magit` → `vc`, `corfu` → `completion-preview`) lives in the same file as the built-in it enhances. There is no "builtins.el" / "third-party.el" split.
+
+## Conventions
+
+- Every module file is named `init-<concern>.el` under `lisp/`.
+- Every file starts with a `lexical-binding: t` cookie.
+- Every file ends with `(provide 'init-<concern>)`.
+- Modules are loaded in order from `init.el`.
+- `use-package-always-ensure` is `t` (set in `early-init.el`), so every `use-package` block defaults to "install if missing". Built-ins must opt out with `:ensure nil`. Packages provided by Nix use `:ensure nil` — Nix puts them on `load-path`, so `use-package` finds them without touching the network.
+- User options (`defcustom` variables) are set via `setopt`, not `setq`, so the `:set` callback and `:type` validation run.
+
+## Load order
+
+`init.el` loads modules in this order:
+
+```
+init-core         GC, encoding, var/ paths, sane file-handling defaults
+init-keys         Global keymap and window-split helpers
+init-ui           Theme, modeline, fonts, frame tweaks, icons, kkp, clipetty
+init-help         helpful + built-in help tweaks
+init-docs         Register the bundled jotain.info with C-h i
+init-editing      elec-pair, delsel, whitespace, region tools
+init-completion   vertico, marginalia, orderless, consult, corfu, cape
+init-navigation   dired, dirvish, project, windmove, winner
+init-vc           vc, magit, magit-todos, forge, diff-hl, smerge, ediff
+init-prog         prog-mode, treesit, eglot, flymake, eldoc, apheleia, compile
+init-project      project + projection + compile-multi
+init-ai           claude-code-ide, gptel, mcp
+init-shell        eshell, vterm, comint
+init-systems      sops, logview, auth-source-1password
+init-tracking     keyfreq, wakatime, activity-watch
+init-writing      jinx, markdown-mode, denote, pdf-tools
+init-org          org, org-modern, capture templates
+
+init-lang-nix
+init-lang-rust
+init-lang-python
+init-lang-web         TS/TSX/CSS/HTML/JSON
+init-lang-devops      Dockerfile, terraform, just, ansible
+init-lang-data        yaml, csv, sql, jinja2, gnuplot
+init-lang-systems     Go, C/C++, CMake, Haskell
+```
+
+## Core modules
+
+### `init-core`
+
+GC, encoding, and the sane-defaults baseline. Restores `gc-cons-threshold` to 16 MiB after the early-init bump; pauses GC entirely while the minibuffer is open; forces UTF-8 everywhere; enables `save-place-mode`, `recentf`, `savehist`, `repeat-mode`, `uniquify`, `ibuffer` as the default buffer list, `global-auto-revert-mode`. Defines `jotain-var-dir` and the `jotain-var-file` helper, and themes the built-in state-file variables (`recentf-save-file`, `savehist-file`, `save-place-file`, `bookmark-default-file`, `auto-save-list-file-prefix`) to live under `var/`. Other modules use the same helper to keep their own state (keyfreq, logview, forge, transient) in the same place. Also contains the macOS modifier-key fix (`Cmd`→Meta, `Option`→Super, right Option untouched for special characters). Sets `read-extended-command-predicate` to filter `M-x` candidates by major mode; untagged commands are still shown, and typing a full command name always runs it regardless of the filter.
+
+### `init-keys`
+
+Global bindings only — per-package bindings live in the relevant `use-package` block. Unbinds `C-z` / `C-x C-z` (no accidental suspend on GUI), binds `M-o` to `other-window`, enables `windmove-default-keybindings` (Shift + arrows), and defines `jotain-toggle-window-split` on `C-x j` for rotating a two-window layout. Also registers `which-key-add-key-based-replacements` for the cross-cutting `C-c` / `C-x` prefixes (`C-c n` org-roam, `C-c r` eglot-refactor, `C-c o` combobulate, `C-x P` project, etc.) so the prefix menus surface short noun-phrase labels instead of bare command names. See [Keybindings](/keybindings) for the full namespace map.
+
+### `init-ui`
+
+Appearance. Uses `modus-operandi-tinted` and `modus-vivendi-tinted` (user-customisable via `jotain-theme-light` / `jotain-theme-dark`), with `auto-dark-mode` flipping between them based on the system appearance. Installs `doom-modeline`, picks the first available font from `jotain-font-preferences` (JetBrains Mono Nerd Font → Iosevka Nerd Font → DejaVu Sans Mono), enables `display-line-numbers`, `pixel-scroll-precision-mode`, `hl-line-mode`, `show-paren-mode`, built-in `which-key`, `nerd-icons` integrations for dired/ibuffer/corfu/marginalia, `hl-todo`, `breadcrumb`, `pulsar`, `rainbow-delimiters`, `indent-bars`. Also enables `global-kkp-mode` (Kitty Keyboard Protocol) and `clipetty` for OSC 52 clipboard support through SSH + tmux.
+
+### `init-help`
+
+Built-in help tweaks (`help-window-select`) plus `helpful` for richer `describe-*` buffers. See [Finding Information in Emacs](/finding-information-in-emacs) for day-to-day usage.
+
+### `init-docs`
+
+Makes the bundled Jotain Info manual (`jotain.info`, generated by `nix build .#info`) discoverable from `C-h i`. For NixOS / nix-darwin / Home Manager users this is already wired up at the Nix layer: the Emacs wrapper pre-sets `INFOPATH`, so no Elisp is needed — this module is the source-checkout fallback. After `just info`, `result-info/share/info` is added to `Info-directory-list`; `C-h i d m Jotain RET` opens the manual. `JOTAIN_INFO_DIR` overrides the search.
+
+### `init-editing`
+
+Baseline editing primitives: `electric-pair-mode`, `delete-selection-mode`, `whitespace-mode`, undo settings, region tools.
+
+### `init-completion`
+
+The vertico stack on the minibuffer side, corfu + cape on the in-buffer side, plus the built-in `minibuffer` tweaks they rely on. All configured in one file because touching one nearly always means touching the others. `C-s` is deliberately left as `isearch-forward`; use `M-s l` for `consult-line` when you want the consult UI.
+
+### `init-navigation`
+
+`dired` and `dirvish` in the same file, along with `project`, `winner-mode`, and directional navigation.
+
+### `init-vc`
+
+`vc` pinned to Git only (other backends are a slow startup tax), `magit` with refined hunks and worktrees in `magit-status`, `magit-todos`, `forge` (configured with the built-in sqlite backend, `emacsql-sqlite-builtin`), `diff-hl` (including `diff-hl-flydiff-mode` for pre-save indicators), `smerge-mode` helpers, and `ediff` with sane window setup.
+
+### `init-prog`
+
+The shared substrate for programming modes: `prog-mode` hooks, `treesit` setup, `eglot`, `flymake`, `eldoc`, `apheleia` for format-on-save, `compile`. Per-language `eglot-ensure` hooks live here so all LSP wiring is in one place; per-language mode settings live in `init-lang-*.el`. When the `rass` binary (rassumfrassum, shipped in the devenv shell) is on `PATH`, `tsx-ts-mode` / `typescript-ts-mode` / `typescript-mode` buffers are routed through it to run `typescript-language-server` alongside whichever of `eslint-lsp` and `tailwindcss-language-server` are also on `PATH`, and Python buffers run the bundled `rass python` preset (basedpyright + ruff) when both binaries are present; any missing prerequisite makes eglot fall back to its built-in single-server lookup, so projects using `pylsp` / `pyright` / unguarded tsserver keep working unchanged. Also provides `jotain-sonarlint` for on-demand SonarLint analysis via the `sonarlint-ls` language server — SonarCloud connected mode is configured per-project via `eglot-workspace-configuration` in `.dir-locals.el`.
+
+### `init-project`
+
+Two complementary project command systems: `projection` (`.dir-locals.el`-backed commands exposed via `C-x P`, auto-detected from Makefiles/justfiles/Cargo.toml/etc) and `compile-multi` (per-major-mode named compile commands like "go test", "pytest file", "nix flake check"). They overlap but neither fully covers the other.
+
+### `init-ai`
+
+AI assistants. `claude-code-ide` on `C-c C-'` for agentic multi-file edits via the Claude Code CLI. `gptel` on `C-c RET` (send) / `C-c M-RET` (menu) with three backends configured: Anthropic (default, `claude-sonnet-4`), Google Gemini, and a local Ollama instance (no key needed). `mcp` is loaded after `gptel` for Model Context Protocol tool use. API keys resolve from the environment (`ANTHROPIC_API_KEY` / `GEMINI_API_KEY`) first, then fall back to `auth-source` — `auth-source-1password` (see `init-systems`) makes that transparent.
+
+### `init-shell`
+
+`eshell`, `vterm`, and `comint` together — shells have their own input handling, history, prompts, and rendering, so grouping them lets the rules be coordinated in one place.
+
+### `init-systems`
+
+Sysadmin tools: SOPS-encrypted file editing, `logview` for log files, and `auth-source-1password` as an `auth-source` backend so `magit`/`forge`, `gptel`, `smtpmail`, etc. all resolve credentials against the 1Password vault transparently.
+
+### `init-tracking`
+
+Passive usage instrumentation. `keyfreq` counts command frequency (`M-x keyfreq-show`), `wakatime-mode` reports heartbeats to a Wakatime/Wakapi server (guarded by `:if` on `wakatime-cli` + `WAKATIME_API_KEY`, so it is a no-op if either is missing), and `activity-watch-mode` is installed but off by default — enable with `M-x global-activity-watch-mode`.
+
+### `init-writing`
+
+Prose editing: `jinx` for spell-checking, `markdown-mode`, `denote` for notes, `pdf-tools`. Org is big enough to earn its own file.
+
+### `init-org`
+
+`org-mode`, `org-modern`, capture templates, agenda, and friends. Binds `C-c a` → `org-agenda`, `C-c c` → `org-capture`, `C-c l` → `org-store-link`.
+
+## Language modules
+
+Each `init-lang-*.el` file pins `:mode` regexes and provides font-lock for a group of related languages. Formatter configuration is centralised through `apheleia` in `init-prog.el`; LSP server hooks live in `init-prog.el` too.
+
+- **`init-lang-nix`** — `nix-ts-mode`. Formatting via apheleia (which ships a `nixfmt` entry).
+- **`init-lang-rust`** — `rust-ts-mode` (built-in) plus Cargo command wrappers.
+- **`init-lang-python`** — `python-ts-mode` (built-in), the interpreter set to `python3`. The LSP server (pyright/basedpyright/ruff-lsp) comes from the project environment, not from this config.
+- **`init-lang-web`** — `typescript-ts-mode`, `tsx-ts-mode`, CSS, HTML, JSON, and related tree-sitter modes.
+- **`init-lang-devops`** — Dockerfile, docker-compose, Terraform (`*.tf`), gitlab-ci, justfile, Ansible. Also exposes the `docker` Magit-style TUI on `C-c d` and a `jotain-docker-backend` defcustom (`'podman` by default, set to `'docker` for classic Docker) that switches the runtime command, compose command, and TRAMP method.
+- **`init-lang-data`** — YAML, CSV (with `csv-align-mode`), SQL (`sql-indent`), Jinja2, gnuplot.
+- **`init-lang-systems`** — Go (`go-mode`), C/C++ (`cc-mode`), CMake, Haskell.
+
+## Adding a new module
+
+1. Create `lisp/init-<concern>.el` with the usual Elisp headers and a `lexical-binding: t` cookie.
+2. End the file with `(provide 'init-<concern>)`.
+3. Add a `(require 'init-<concern>)` line in `init.el` at the appropriate point in the load order.
+4. Run `just check` to confirm the parser is happy, then `just compile` to catch warnings.
