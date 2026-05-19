@@ -1,62 +1,45 @@
 ---
-title: 'Development'
-description: 'Preview changes locally to update your docs'
+title: "Development"
+description: "Run the docs site locally"
 ---
 
 <Info>
-  **Prerequisites**:
-  - Node.js version 19 or higher
-  - A docs repository with a `docs.json` file
+  Requires Node.js 19+ and the Mintlify CLI.
 </Info>
 
-Follow these steps to install and run Mintlify on your operating system.
-
-<Steps>
-<Step title="Install the Mintlify CLI">
+## Install the CLI
 
 ```bash
 npm i -g mint
 ```
-</Step>
 
-<Step title="Preview locally">
+## Preview locally
 
-Navigate to your docs directory where your `docs.json` file is located, and run the following command:
+From the repository root (where `docs.json` lives):
 
 ```bash
 mint dev
 ```
 
-A local preview of your documentation will be available at `http://localhost:3000`.
+The site is served at `http://localhost:3000` with hot reload.
 
-</Step>
-</Steps>
-
-## Custom ports
-
-By default, Mintlify uses port 3000. You can customize the port Mintlify runs on by using the `--port` flag. For example, to run Mintlify on port 3333, use this command:
+To pick a different port:
 
 ```bash
 mint dev --port 3333
 ```
 
-If you attempt to run Mintlify on a port that's already in use, it will use the next available port:
+## Pull in project docs
 
-```md
-Port 3000 is already in use. Trying 3001 instead.
-```
-
-## Mintlify versions
-
-Please note that each CLI release is associated with a specific version of Mintlify. If your local preview does not align with the production version, please update the CLI:
+The Guides/Knowledge tabs are committed to this repo; project tabs (marchyo, jotain, jstack) are pulled at build time. To preview them locally, enter the devenv shell and run:
 
 ```bash
-npm mint update
+aggregate-docs
 ```
 
-## Validating links
+This clones each project repo, copies its `docs/` directory into this tree, and merges its navigation into `docs.json`. The script is defined in `devenv.nix`.
 
-The CLI can assist with validating links in your documentation. To identify any broken links, use the following command:
+## Validate links
 
 ```bash
 mint broken-links
@@ -64,31 +47,16 @@ mint broken-links
 
 ## Deployment
 
-If the deployment is successful, you should see the following:
+CI builds the `docs` branch from `main` daily and on push. Mintlify's GitHub app deploys from the `docs` branch automatically. See `.github/workflows/multirepo-docs.yml`.
 
-<Frame>
-  <img src="/images/checks-passed.png" alt="Screenshot of a deployment confirmation message that says All checks have passed." style={{ borderRadius: '0.5rem' }} />
-</Frame>
+## Updating the CLI
 
-## Code formatting
+```bash
+npm i -g mint
+```
 
-We suggest using extensions on your IDE to recognize and format MDX. If you're a VSCode user, consider the [MDX VSCode extension](https://marketplace.visualstudio.com/items?itemName=unifiedjs.vscode-mdx) for syntax highlighting, and [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) for code formatting.
+If a preview misbehaves after an update, clear the cache:
 
-## Troubleshooting
-
-<AccordionGroup>
-  <Accordion title='Error: Could not load the "sharp" module using the darwin-arm64 runtime'>
-
-    This may be due to an outdated version of node. Try the following:
-    1. Remove the currently-installed version of the CLI: `npm remove -g mint`
-    2. Upgrade to Node v19 or higher.
-    3. Reinstall the CLI: `npm i -g mint`
-  </Accordion>
-
-  <Accordion title="Issue: Encountering an unknown error">
-  
-    Solution: Go to the root of your device and delete the `~/.mintlify` folder. Then run `mint dev` again.
-  </Accordion>
-</AccordionGroup>
-
-Curious about what changed in the latest CLI version? Check out the [CLI changelog](https://www.npmjs.com/package/mintlify?activeTab=versions).
+```bash
+rm -rf ~/.mintlify
+```

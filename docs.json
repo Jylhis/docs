@@ -1,13 +1,23 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "willow",
+  "theme": "almond",
   "name": "Jylhis Docs",
   "colors": {
-    "primary": "#b5703c",
-    "light": "#d4884a",
-    "dark": "#8e5530"
+    "primary": "#9a5a2a",
+    "light": "#e89b5e",
+    "dark": "#7a4622"
   },
   "favicon": "/favicon.svg",
+  "fonts": {
+    "heading": {
+      "family": "JetBrains Mono",
+      "weight": 500
+    },
+    "body": {
+      "family": "Literata",
+      "weight": 400
+    }
+  },
   "navigation": {
     "tabs": [
       {
@@ -19,22 +29,6 @@
               "index",
               "quickstart",
               "development"
-            ]
-          },
-          {
-            "group": "Customization",
-            "pages": [
-              "essentials/settings",
-              "essentials/navigation"
-            ]
-          },
-          {
-            "group": "Writing content",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
             ]
           },
           {
@@ -54,26 +48,6 @@
             "group": "Linux",
             "pages": [
               "knowledge/linux-toolbox"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "API reference",
-        "groups": [
-          {
-            "group": "API documentation",
-            "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Endpoint examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
             ]
           }
         ]
@@ -119,15 +93,18 @@
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
+  },
+  "search": {
+    "prompt": "Search the notebook…"
   },
   "description": "From me, for me",
   "appearance": {
@@ -139,14 +116,9 @@
     "latex": true,
     "codeblocks": {
       "themes": {
-        "light": "everforest-light",
-        "dark": "everforest-dark"
+        "light": "github-light",
+        "dark": "github-dark"
       }
-    }
-  },
-  "api": {
-    "playground": {
-      "display": "interactive"
     }
   },
   "metadata": {
@@ -157,6 +129,13 @@
   },
   "interaction": {
     "drilldown": true
+  },
+  "errors": {
+    "404": {
+      "redirect": false,
+      "title": "Page not found",
+      "description": "That page doesn't exist (yet). Try the [index](/) or the [knowledge base](/knowledge/linux-toolbox)."
+    }
   },
   "footer": {
     "socials": {
