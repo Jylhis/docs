@@ -134,7 +134,7 @@
     "404": {
       "redirect": false,
       "title": "Page not found",
-      "description": "That page doesn't exist (yet). Try the [index](/) or the [knowledge base](/knowledge/linux-toolbox)."
+      "description": "That page doesn't exist (yet). Try the [index](/)."
     }
   },
   "footer": {

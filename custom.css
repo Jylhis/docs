@@ -253,9 +253,9 @@ tr:last-child td {
 }
 
 /* Blockquote — copper rule, no shadow */
-blockquote {
-  border-left: 2px solid var(--jd-accent) !important;
-  background: var(--jd-accent-subtle) !important;
+.prose blockquote {
+  border-left: 2px solid var(--jd-accent);
+  background: var(--jd-accent-subtle);
   font-style: italic;
 }
 
