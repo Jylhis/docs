@@ -2,6 +2,10 @@
 # .git, .github, .claude, .agents, .idea, node_modules,
 # README.md, LICENSE.md, CHANGELOG.md, CONTRIBUTING.md
 
+# Contributor / agent guides (contain HTML comments and meta notes)
+AGENTS.md
+CLAUDE.md
+
 # Draft content
 drafts/
 *.draft.mdx
