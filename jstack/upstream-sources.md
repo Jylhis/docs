@@ -1,0 +1,134 @@
+# Upstream skill sources
+
+## Active sources
+
+Tracked upstream repositories live in `upstream/sources.yaml`. The
+`.claude/skills/upstream-tracker` skill drives import, monitoring, and per-commit
+review. See its `SKILL.md` and the references under
+`.claude/skills/upstream-tracker/references/` for the workflow, the
+manifest schema, and the `metadata.upstream-*` frontmatter convention.
+
+`upstream/sources.yaml` does not exist until the first source is
+adopted — the skill creates the layout. Until then the only record of
+intended sources is the **Archive** below.
+
+### Aggregator source: `jetbrains-skills`
+
+`github:JetBrains/skills` is tracked in `upstream/sources.yaml` as a
+watch point for new skills. It is an **aggregator**: a JetBrains-filtered,
+security-scanned snapshot of ~15 upstream repos (Anthropic, OpenAI,
+Vercel, antfu, Kotlin org, Google Workspace, runkids, and others), plus
+a handful of JetBrains originals. Two caveats when importing from it:
+
+- **Prefer the origin repo when it is already tracked here.** Several of
+  its skills (`security-best-practices`, `security-threat-model`,
+  `openai-pdf`, ...) come from `openai-skills`, which this catalogue
+  already tracks directly. Importing the same content from two sources
+  breaks the review-cursor model.
+- **Check licensing per skill.** The aggregator has no root license and
+  most skill directories carry none; the origin repo's license governs
+  (e.g. `Kotlin/kotlin-backend-agent-skills` is MIT).
+
+Vendoring candidates surfaced in the 2026-08 review, not yet imported:
+Kotlin backend skills for the `jvm` umbrella (`spring-kotlin-code-review`,
+`production-incident-responder`, `test-suite-builder`,
+`java-kotlin-migration-assistant`), `postgres-best-practices` (Supabase,
+would need a new plugin), `mcp-builder` (Anthropic), `webapp-testing`
+(Anthropic), and `teamcity-cli` (JetBrains original). The JetBrains
+Rider-coupled originals (`debugging-code`, `refactoring-code`) are not
+portable (IDE-specific `allowed-tools`) and stay unvendored.
+
+## Archive — parked upstream sources
+
+The table below preserves the upstream skill repositories previously
+bundled via `bundled-sources.nix`. The wiring (28 non-flake inputs in
+`flake.nix`, `bundled-sources.nix`, the discovery / namespace /
+include / exclude machinery) was removed in the v3 redesign in favor
+of a flat content-only layout.
+
+To re-import any of these, populate `upstream/sources.yaml` with a
+`sources[]` entry per `.claude/skills/upstream-tracker/references/manifest-schema.md`,
+then run
+`python3 .claude/skills/upstream-tracker/scripts/import.py <id>`.
+
+### Sources
+
+| Key | Repo | Namespace | Subdir / paths | Notes |
+|---|---|---|---|---|
+| `cc-skills-golang` | github:samber/cc-skills-golang | `golang` | `skills/` | |
+| `obsidian-skills` | github:kepano/obsidian-skills | `obsidian` | `skills/` | |
+| `rust-skills` | github:actionbook/rust-skills | `rust` | `skills/`, `agents/`, `commands/` | |
+| `claude-plugins-official` | github:anthropics/claude-plugins-official | `anthropic` | selected paths | `claude-md-improver` + 9 agents + 4 commands |
+| `hashicorp-agent-skills` | github:hashicorp/agent-skills | `terraform` | `terraform-test`, `terraform-style-guide`, `refactor-module`, `terraform-stacks` | |
+| `openai-skills` | github:openai/skills | `openai` | `aspnet-core`, `frontend-skill`, `gh-address-comments`, `gh-fix-ci`, `security-best-practices`, `security-ownership-map`, `security-threat-model` | from `skills/.curated/` |
+| `microsoft-skills` | github:microsoft/skills | `ms` | `cloud-solution-architect`, `microsoft-docs` | from `.github/skills/` |
+| `microsoft-azure-skills` | github:microsoft/skills | `azure` | `.github/plugins/azure-skills/skills` | full plugin |
+| `cloudflare-skills` | github:cloudflare/skills | `cloudflare` | `cloudflare`, `durable-objects`, `workers-best-practices`, `wrangler` | |
+| `trailofbits-skills` | github:trailofbits/skills | `tob` | 24 plugins | `agentic-actions-auditor`, `audit-context-building`, `differential-review`, `dimensional-analysis`, `insecure-defaults`, `semgrep-rule-creator`, `semgrep-rule-variant-creator`, `sharp-edges`, `static-analysis`, `supply-chain-risk-auditor`, `testing-handbook-skills`, `trailmark`, `variant-analysis`, `yara-authoring`, `constant-time-analysis`, `mutation-testing`, `zeroize-audit`, `dwarf-expert`, `gh-cli`, `modern-python`, `skill-improver`, `workflow-skill-design`, `culture-index` |
+| `trailofbits-skills-curated` | github:trailofbits/skills-curated | `tobc` | 14 plugins | `ffuf-web-fuzzing`, `ghidra-headless`, `humanizer`, `last30days`, `openai-cloudflare-deploy`, `openai-develop-web-game`, `openai-pdf`, `planning-with-files`, `python-code-simplifier`, `react-pdf`, `scv-scan`, `security-awareness`, `skill-extractor`, `wooyun-legacy` |
+| `addyosmani-agent-skills` | github:addyosmani/agent-skills | `addy` | `skills/` | excludes `using-agent-skills` |
+| `minimax-skills` | github:MiniMax-AI/skills | `minimax` | `shader-dev` | |
+| `taste-skill` | github:Leonxlnx/taste-skill | `taste` | `skills/` | UI design |
+| `ai-research-skills` | github:Orchestra-Research/AI-Research-SKILLs | `ai-research` | `.` | ML research |
+| `github-awesome-copilot` | github:github/awesome-copilot | `github` | `github-actions-workflow-spec`, `dependabot`, `gh-cli`, `secret-scanning`, `codeql`, `automate-this` | |
+| `grafana-skills` | github:grafana/skills | `grafana` | `skills/` (recursive) | observability |
+| `composio-awesome-codex-skills` | github:ComposioHQ/awesome-codex-skills | `composio` | 45 curated top-level skills | excludes generated `composio-skills/` marketplace |
+| `superpowers-zh` | github:jnMetaCode/superpowers-zh | `superpowers-zh` | `skills/` | Chinese-language |
+| `prat011-awesome-llm-skills` | github:Prat011/awesome-llm-skills | `prat011` | `.` | awesome-list |
+| `aboutsecurity` | github:wgpsec/AboutSecurity | `aboutsecurity` | `skills/` | excludes `Dic/`, `Payload/`, `Vuln/` |
+| `finance-skills` | github:himself65/finance-skills | `finance` | `plugins/` | excludes `skill-creator` |
+| `claude-workflow-v2` | github:CloudAI-X/claude-workflow-v2 | `workflow` | `skills/` | |
+| `awesome-claude-code-toolkit` | github:rohitg00/awesome-claude-code-toolkit | `cc-toolkit` | `skills/` | awesome-list |
+| `vibe-skills` | github:foryourhealth111-pixel/Vibe-Skills | `vibe` | `.` | root orchestration only |
+| `tech-leads-agent-skills` | github:tech-leads-club/agent-skills | `tlc` | `packages/skills-catalog/skills` | |
+| `gitagent` | github:open-gitagent/gitagent | `gitagent` | `skills/` | excludes `example-skill` |
+| `waza` | github:tw93/Waza | `waza` | `skills/` | |
+| `mattpocock-skills` | github:mattpocock/skills | `mattpocock` | `skills/` | excludes `design-an-interface`, `edit-article`, `obsidian-vault`, `qa`, `request-refactor-plan`, `ubiquitous-language` |
+
+## Adapted sources (not tracked in `sources.yaml`)
+
+These upstreams cannot flow through `import.py` (no importable
+`skills/<name>/SKILL.md` layout), so their content was manually adapted
+into locally authored skills. Re-check them by hand when refreshing.
+
+| Source | Adapted into | Notes |
+|---|---|---|
+| github:Graphify-Labs/graphify (MIT) | `skills/personal/graphify` | upstream ships a single lowercase `graphify/skill.md` inside the Python package; workflow adapted, not vendored |
+| gist:karpathy/442a6bf555914893e9891c11519de94f | `skills/personal/llm-wiki` | pattern document, no license stated; concepts adapted in original prose |
+| fortelabs.com/blog/para (copyrighted) | `skills/personal/para-method` | method described in original prose with attribution |
+
+## Evaluated candidates (decided, not adopted)
+
+Candidates surfaced during upstream review that were evaluated and
+consciously **not** vendored, recorded here so they don't resurface as
+open questions.
+
+| Candidate | Source | Decision | Reason |
+|---|---|---|---|
+| `golang-refactoring` | `cc-skills-golang` (MIT) | deferred (2026-07-15) | Its substance lives in a multi-file upstream `references/` subdir that the `umbrella-references` flatten drops; the SKILL.md body is mostly `ultracode`/worktree/PR orchestration persona plus a "Community default" banner, so flattening now yields a hollow topic. Revisit only if folding the subfiles in by hand. Its siblings `golang-gopls` and `golang-pkg-go-dev` were adopted into the `go` umbrella. |
+| `rust-review` | `trailofbits-skills` (AGPL-3.0) | skip (2026-07-15) | Plugin orchestrator, not a self-contained skill: 1 of 86 files is the SKILL.md, and every phase shells out to sibling `scripts/*.py`, `agents/*.md`, `prompts/clusters/*` that a standalone import leaves behind (it aborts at plugin-root resolution on invocation). Does not fit the skills-only marketplace model; only viable as a whole-plugin vendor, out of scope for now. |
+
+## Anthropic-published skills (rely on upstream distribution)
+
+The following skills were vendored into `staging/` but have been removed in
+favor of Anthropic's own distribution channels. Re-vendor only if upstream
+diverges from what we need.
+
+| Skill | Origin | Why removed |
+|---|---|---|
+| `claude-api` | Anthropic (auto-loaded by Claude Code) | Already shipped with Claude Code; maintaining a fork drifts from upstream. Multi-language subtree (`python/`, `typescript/`, `java/`, `go/`, ...) does not fit our two-level layout. |
+| `mcp-builder` | Anthropic | Available via Anthropic plugin distribution; broken `license:` reference and `reference/` (singular) layout would need cleanup. |
+| `session-log` | Anthropic | Used target-specific `allowed-tools` frontmatter (rejected by `scripts/validate.py`); `init` skill covers the same niche. |
+| `skill-creator` | Anthropic | Available via Anthropic plugin distribution; `init` skill covers session-start workflow. |
+
+## How this used to work
+
+`flake.nix` listed each repo as a non-flake input. `bundled-sources.nix`
+mapped each input to a namespace + subdir / paths / include / exclude
+spec. `modules/skills.nix` walked each spec at module-eval time using
+`lib/discover.nix` and registered every discovered SKILL.md as a
+first-class skill, deployed alongside locally-maintained ones.
+
+Removed because the resulting catalogue (~hundreds of skills, several
+hundred LOC of resolution logic) was unreviewed and unmaintained. Re-add
+incrementally and only after vetting.

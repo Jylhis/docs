@@ -51,6 +51,62 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "jotain",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "jotain/introduction",
+              "jotain/installation",
+              "jotain/quickstart"
+            ]
+          },
+          {
+            "group": "Architecture",
+            "pages": [
+              "jotain/architecture/overview",
+              "jotain/architecture/nix-build",
+              "jotain/architecture/modules"
+            ]
+          },
+          {
+            "group": "Configuration",
+            "pages": [
+              "jotain/configuration/init",
+              "jotain/configuration/early-init",
+              "jotain/configuration/packages",
+              "jotain/configuration/package-reference"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "jotain/reference/language-support"
+            ]
+          },
+          {
+            "group": "Usage",
+            "pages": [
+              "jotain/usage/launching",
+              "jotain/usage/devenv",
+              "jotain/usage/notebooks",
+              "jotain/usage/ai-screenshot"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "jotain/compilation-mode",
+              "jotain/finding-information-in-emacs",
+              "jotain/keybindings",
+              "jotain/setting-variables",
+              "jotain/ergonomics",
+              "jotain/inspiration"
+            ]
+          }
+        ]
       }
     ],
     "global": {

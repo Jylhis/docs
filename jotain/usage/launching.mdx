@@ -1,0 +1,161 @@
+---
+title: Launching Emacs
+description: Pick the right launch pattern for the task — one-shot, daemon + client, or `-Q -nw` quick edit
+---
+
+# Launching Emacs
+
+<Note>
+**Current state:** the devenv shell provides tooling only — there is no
+`emacs` binary in it (see the top-of-file note in `devenv.nix`). The
+direct-launch recipes (`just run`, `just debug`, `just tty`,
+`just daemon`, `just client`, `just client-tty`, `just quick`) are
+`[DISABLED]` stubs that print a notice and exit 0. The supported launch
+path is **`just run-built`**: build Emacs via Nix, then launch it with
+this configuration. Other docs pages that mention launching point back
+at this note.
+</Note>
+
+Jotain supports three launch patterns. Pick the one that matches the
+task — they're complementary, not alternatives.
+
+## One-shot
+
+A fresh `emacs` process every time. Loads the full Jotain config; pays
+package-init cost on every launch.
+
+```bash
+just run-built            # build for this platform, then launch result/bin/emacs
+just run-built-debug      # same, with --debug-init and debug-on-error
+```
+
+`just run-built` auto-detects the platform, builds the full
+distribution (`just build`; on aarch64-linux the full terminal-only
+distribution via `just build-nox-full`), and launches
+`./result/bin/emacs --init-directory=<repo>`, so it never touches
+`~/.emacs.d`. The first invocation pays a `nix build` (usually a
+binary-cache pull); reruns launch straight from `./result`.
+
+Best for sanity checks and trying out config changes. Avoid for
+day-to-day editing — the startup cost adds up.
+
+## Daemon + client
+
+Start Emacs once as a server; reuse it via lightweight clients. The
+first frame is slow; every frame after is instant.
+
+### In the repo (development)
+
+The `just daemon` / `just client` / `just client-tty` recipes are
+disabled (no Emacs in the dev shell — see the note above). The manual
+equivalent uses the Nix-built binary:
+
+```bash
+just build          # or let a previous `just run-built` leave ./result behind
+./result/bin/emacs --fg-daemon --init-directory="$PWD"   # foreground daemon
+./result/bin/emacsclient -c                              # graphical client frame
+./result/bin/emacsclient -t                              # terminal client frame
+```
+
+The daemon blocks; run it in another terminal (or under `tmux`) and
+connect with `emacsclient` from elsewhere. Launching with
+`--init-directory=<repo>` keeps it isolated from `~/.emacs.d`.
+
+Stop the daemon with `C-c` in its terminal, or from any client:
+
+```bash
+./result/bin/emacsclient -e '(kill-emacs)'
+```
+
+### As an installed user (home-manager)
+
+The `services.jotain` module ships:
+
+- A systemd user service (Linux) or launchd agent (macOS) that runs
+  `emacs --fg-daemon`. Enabled via `services.jotain.startWithUserSession`.
+- `jotain-editor` — `emacsclient --tty` with a `-nw` fallback. Set as
+  `$EDITOR` when `services.jotain.defaultEditor = true`.
+- `jotain-visual` — `emacsclient --create-frame`. Set as `$VISUAL`.
+- `jotctl {start|stop|status|restart|logs}` — manage the daemon itself
+  (wraps `launchctl` on macOS, the `jotain` systemd user service on
+  Linux). Always on `PATH` when the module is enabled.
+- A `.desktop` entry (`jotain-client.desktop`) for launching a GUI
+  client from your application menu, enabled by
+  `services.jotain.client.enable`.
+
+See *Module Options* in the appendix for the full option reference.
+
+### Shell aliases
+
+Inspired by [Rahul Juliato's launching-emacs-terminal post][article-1],
+the module can install short aliases for the daemon and clients:
+
+```nix
+services.jotain = {
+  enable = true;
+  shellAliases.enable = true;
+  # shellAliases.prefix = "j";   # for "jemd"/"jem"/"jemg"
+};
+```
+
+| Alias | Expands to                              |
+| ----- | --------------------------------------- |
+| `emd` | `emacs --fg-daemon` (wrapped)           |
+| `em`  | `jotain-editor` (`emacsclient --tty`)   |
+| `emg` | `jotain-visual` (`emacsclient -c`)      |
+
+The aliases are written to `programs.bash.shellAliases`,
+`programs.zsh.shellAliases`, and `programs.fish.shellAliases` — pick
+up whichever shell home-manager already manages.
+
+### Managing the daemon (`jotctl`)
+
+`emd` starts a *foreground* daemon; to manage the supervised daemon
+(the launchd agent on macOS, the `jotain` systemd user service on
+Linux) use `jotctl`, which is always on `PATH` when the module is
+enabled — independent of `shellAliases.enable`:
+
+| Command          | macOS (launchd)                  | Linux (systemd --user)            |
+| ---------------- | -------------------------------- | --------------------------------- |
+| `jotctl status`  | `launchctl print …` (default)    | `systemctl --user status jotain`  |
+| `jotctl start`   | `launchctl bootstrap` / kickstart | `systemctl --user start jotain`   |
+| `jotctl stop`    | `launchctl bootout`              | `systemctl --user stop jotain`    |
+| `jotctl restart` | `launchctl kickstart -k`         | `systemctl --user restart jotain` |
+| `jotctl logs`    | launchd state + note¹            | `journalctl --user -u jotain -f`  |
+
+¹ The launchd agent sets no `StandardOutPath`, so macOS doesn't capture
+the daemon's stdout; `jotctl logs` prints the launchd state instead.
+
+## Quick edit (`-Q -nw`)
+
+When you need a stripped-down Emacs — editing `/etc/hosts` over SSH,
+fixing a typo in a 200 MB log file, demonstrating something with no
+muscle-memory key bindings — bypass Jotain entirely (the `just quick`
+recipe is disabled; use any `emacs` on the host, or the Nix-built one):
+
+```bash
+./result/bin/emacs -Q -nw --eval "(load-theme 'wombat t)"
+```
+
+This is the pattern [Rahul Juliato describes in basic-emacs-alias][article-2].
+`-Q` skips `early-init.el`, `init.el`, site-lisp, and `~/.emacs.d/`;
+`-nw` keeps it in the current terminal; the wombat theme line is the
+one concession to readability on dark terminals.
+
+To get the same effect anywhere, add an alias to your shell:
+
+```bash
+alias eq='emacs -Q -nw --eval "(load-theme '\''wombat t)"'
+```
+
+## Which one to use
+
+| Situation                               | Use                  |
+| --------------------------------------- | -------------------- |
+| First-time setup, sanity checks         | `just run-built`     |
+| Day-to-day editing, fast frame opens    | daemon + `em`/`emg`  |
+| Sysadmin SSH session, ad-hoc edit       | `emacs -Q -nw` alias |
+| Debugging a config regression           | `just run-built-debug` |
+
+[article-1]: https://rahuljuliato.com/posts/launching-emacs-terminal
+[article-2]: https://rahuljuliato.com/posts/basic-emacs-alias
